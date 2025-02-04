@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D Model in a Div</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    /* Style the container div */
+    @font-face {
+    font-family: 'Fantome-Regular';
+    src: url('fonts/Fantome-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+    body{
+        background-image: url(giphy.gif);
+        background-size: cover;
+        background-color: rgb(186, 169, 196);
+    }
+    #modelContainer {
+        top: 5%;
+        background-color: rgb(186, 169, 196);
+        border-radius: 60%;
+      width: 800px;
+      height: 600px;
+      margin: 80px auto;
+      position: relative;
+    }
+
+      /* Style for the clickable div */
+      #spray {
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+   
+      
+      color: white;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      margin: 20px auto;
+      font-family: 'Fantome-Regular', Arial, sans-serif;
+      font-style: italic;
+      font-size: 100px;
+      z-index: 1000 !important;
+    }
+    /* Container for the output lines */
+    #output {
+    position: absolute;
+    top: 1%;
+    left: 5%;
+      width: 80%;
+      margin: 20px auto;
+      font-family: 'Fantome-Regular', Arial, sans-serif;
+      font-size: 80px;
+    }
+    /* Style for the "notes of" text */
+    .notes {
+      color: white;
+      font-weight: bold;
+    }
+    /* Style for the random sentence text */
+    .sentence {
+      color: red;
+    }
+    /* Paragraph styling */
+    #output p {
+      margin: 10px 0;
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="modelContainer">
+  <model-viewer
+    src="models/perfumes/gltf.gltf"
+    alt="A 3D model"
+    auto-rotate
+    camera-controls
+    style="width: 100%; height: 100%;">
+  </model-viewer>
+</div>
+
+
+ <!-- The clickable div -->
+ <div id="spray">SPRAY</div>
+  
+ <!-- The container where the generated lines will appear -->
+ <div id="output"> </div>
+
+
+ <script>
+    // Array of sentences to choose from.
+    const sentences = [
+      "a hangover",
+      "cherry",
+      "violet",
+      "beeswax",
+      "bitter almond",
+      "himalayan cedar",
+      "styrax",
+      "a sweet and comforting cloud to fill the void of chemical anxiety",
+      "the void of chemical anxiety",
+      "craving for intimacy",
+      "compulsive need of physical contact and existential comfort",
+      "physical contact",
+      "existential comfort",
+      "time and space",
+      "thumb sucking",
+      "folklore from around the world",
+      "depictions of hangovers",
+      "magic potions and gods with nectar in place of blood",
+      "blood",
+      "honey and flowers",
+      "a specific cedar tree",
+      "wild cherry native to the region",
+      "hangovers and mythological magic",
+      "great wealth, good fortune and many wives",
+      "many wives",
+      "no children",
+      "the king",
+      "a very devout man",
+      "pleasing the gods",
+      "a beautiful pitcher of water",
+      "the baby boy",
+      "the pregnant king",
+      "the boy sucking his thumb",
+      "conquering all of the earth",
+      "gelatine candy with violet flavouring",
+      "the animalic notes of the vintage in the past",
+      "Minnie Riperton’s cover for her album “Stay in Love”",
+      "moral panic",
+      "grandma",
+      "candy melted in a 100 degree car all over the plastic dashboard",
+      "salacious career women and minxy flirts",
+      "nursing home"
+    ];
+
+    /**
+     * Animates the display of a sentence word by word inside the given span element.
+     * Once complete, it calls the provided callback.
+     *
+     * @param {HTMLElement} spanElement - The span element to update.
+     * @param {string} newSentence - The new sentence to animate.
+     * @param {function} callback - A function to call once the animation is complete.
+     */
+    function animateSentence(spanElement, newSentence, callback) {
+      const words = newSentence.split(" ");
+      spanElement.textContent = ""; // Clear current text
+      let i = 0;
+      
+      function addWord() {
+        if (i < words.length) {
+          // Append a space if it's not the first word
+          spanElement.textContent += (i > 0 ? " " : "") + words[i];
+          i++;
+          setTimeout(addWord, 300); // 300ms delay per word
+        } else {
+          if (callback) callback();
+        }
+      }
+      addWord();
+    }
+
+    /**
+     * Updates the three lines with unique random sentences.
+     * Each line is updated sequentially—line 2 starts only after line 1 has finished animating, and so on.
+     */
+    function updateLines() {
+      const outputDiv = document.getElementById("output");
+      
+      // Create a copy of the sentences array to ensure uniqueness.
+      let availableSentences = [...sentences];
+      
+      if (availableSentences.length < 3) {
+        console.error("Not enough sentences to choose 3 unique ones.");
+        return;
+      }
+      
+      // If there are fewer than 3 paragraphs already, create them.
+      let paragraphs = outputDiv.getElementsByTagName("p");
+      if (paragraphs.length < 3) {
+        outputDiv.innerHTML = ""; // Clear any existing content.
+        for (let i = 0; i < 3; i++) {
+          const p = document.createElement("p");
+
+          // Create the "notes of " span.
+          const notesSpan = document.createElement("span");
+          notesSpan.className = "notes";
+          notesSpan.textContent = "notes of ";
+
+          // Create the sentence span (will be updated with animated text).
+          const sentenceSpan = document.createElement("span");
+          sentenceSpan.className = "sentence";
+          sentenceSpan.textContent = ""; // Starts empty.
+
+          p.appendChild(notesSpan);
+          p.appendChild(sentenceSpan);
+          outputDiv.appendChild(p);
+        }
+        // Refresh the paragraphs collection.
+        paragraphs = outputDiv.getElementsByTagName("p");
+      }
+      
+      // Pick 3 unique random sentences from the availableSentences array.
+      const sentencesToUse = [];
+      for (let i = 0; i < 3; i++) {
+        const randomIndex = Math.floor(Math.random() * availableSentences.length);
+        sentencesToUse.push(availableSentences.splice(randomIndex, 1)[0]);
+      }
+      
+      // Function to animate each line sequentially.
+      function animateLine(index) {
+        if (index < 3) {
+          const sentenceSpan = paragraphs[index].querySelector(".sentence");
+          animateSentence(sentenceSpan, sentencesToUse[index], function() {
+            // When the current line finishes, animate the next line.
+            animateLine(index + 1);
+          });
+        }
+      }
+      
+      // Start with the first line.
+      animateLine(0);
+    }
+
+    // Add a click event listener to the spray div.
+    document.getElementById("spray").addEventListener("click", updateLines);
+  </script>
+
+</body>
+</html>
