@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>3D Model in a Div</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     /* Style the container div */
@@ -13,6 +16,30 @@
     font-weight: normal;
     font-style: normal;
 }
+.almendra-regular {
+  font-family: "Almendra", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.almendra-bold {
+  font-family: "Almendra", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.almendra-regular-italic {
+  font-family: "Almendra", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.almendra-bold-italic {
+  font-family: "Almendra", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
 
     body{
         background-image: url(giphy.gif);
@@ -53,11 +80,12 @@
     left: 5%;
       width: 80%;
       margin: 20px auto;
-      font-family: 'Fantome-Regular', Arial, sans-serif;
+     
       font-size: 80px;
     }
     /* Style for the "notes of" text */
     .notes {
+      font-family: 'Fantome-Regular';
       color: white;
       font-weight: bold;
     }
@@ -190,7 +218,7 @@
           // Create the "notes of " span.
           const notesSpan = document.createElement("span");
           notesSpan.className = "notes";
-          notesSpan.textContent = "notes of ";
+          notesSpan.textContent = "NOTES OF ";
 
           // Create the sentence span (will be updated with animated text).
           const sentenceSpan = document.createElement("span");
